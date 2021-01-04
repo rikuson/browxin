@@ -1,23 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
+import 'bootswatch/dist/slate/bootstrap.min.css';
+import styles from './App.module.css';
+import CommandLine from './CommandLine';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.container}>
+      <h1 className="display-3">Start Page</h1>
+      <p className="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+      <CommandLine />
     </div>
   );
 }
