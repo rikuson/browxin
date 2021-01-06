@@ -1,0 +1,23 @@
+@import '~bootswatch/dist/slate/_variables';
+@import '~bootstrap/scss/bootstrap';
+@import '~bootswatch/dist/slate/_bootswatch';
+
+#app {
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 80px;
+  }
+
+  .nav {
+    margin-top: 20px;
+    border: none;
+  }
+
+  .tab-pane {
+    height: 300px;
+    overflow-y: auto;
+    background-color: $jumbotron-bg;
+    border: 1px solid rgba(0, 0, 0, .6);
+  }
+}
