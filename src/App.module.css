@@ -3,3 +3,7 @@
   margin: 0 auto;
   margin-top: 80px;
 }
+
+.lead div {
+  outline: none;
+}
