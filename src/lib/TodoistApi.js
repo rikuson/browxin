@@ -57,6 +57,10 @@ class Rest {
     const request = bent(Rest.URL, 'GET', 'json', 200);
     return request('/rest/v1/tasks', null, this.header);
   }
+  completeTask(taskId) {
+    const request = bent(Rest.URL, 'POST', null, 204);
+    return request(`/rest/v1/tasks/${taskId}/close`, null, this.header);
+  }
   deleteTask(taskId) {
     const request = bent(Rest.URL, 'DELETE', null, 203);
     return request('/rest/v1/tasks/' + taskId, null, this.header);

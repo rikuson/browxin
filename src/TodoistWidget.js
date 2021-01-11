@@ -44,8 +44,24 @@ class TodoistWidget extends Component {
     const state = aes.encrypt('todoist', iv).toString();
     window.location.href = `https://todoist.com/oauth/authorize?client_id=${process.env.REACT_APP_TODOIST_CLIENT_ID}&scope=task:add,data:read_write&state=${state}`;
   }
+  handleChange(e) {
+    const id = e.target.value;
+    const api = new Rest(this.state.token);
+    api.completeTask(id);
+    window.setTimeout(() => {
+      this.setState({ tasks: this.state.tasks.filter(task => String(task.id) !== id) });
+    }, 300);
+  }
   render() {
-    return this.state.token ? <TaskList tasks={this.state.tasks} /> : <Config onClick={this.authorize} />;
+    return (
+      <div id="widget-todoist">
+        {
+          this.state.token ?
+          <TaskList tasks={this.state.tasks} onChange={e => this.handleChange(e)} /> :
+          <Config onClick={this.authorize} />
+        }
+      </div>
+    );
   }
 }
 
@@ -53,7 +69,11 @@ function TaskList(props) {
   return (
     <ul className="list-group list-group-flush">
       {props.tasks.map(task => (
-        <li key={task.id} className="list-group-item">{task.content}</li>
+        <li key={task.id} className="list-group-item">
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" onChange={e => props.onChange(e)} value={task.id} /> {task.content}
+          </div>
+        </li>
       ))}
     </ul>
   );
