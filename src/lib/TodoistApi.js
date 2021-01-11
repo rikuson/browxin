@@ -1,15 +1,33 @@
 const bent = require('bent')
 
-class TodoistApi {
+class OAuth {
   static get URL() {
-    return 'https://api.todoist.com/rest/v1/tasks';
+    return 'https://todoist.com';
+  }
+  fetchToken(code) {
+    return new Promise((resolve, reject) => {
+      const request = bent(OAuth.URL, 'POST', 'json', 200);
+      const params = {
+        client_id: process.env.REACT_APP_TODOIST_CLIENT_ID,
+        client_secret: process.env.REACT_APP_TODOIST_CLIENT_SECRET,
+        code,
+      };
+      request('/oauth/access_token', params)
+        .then(res => resolve(res.access_token))
+        .catch(reject);
+    });
+  }
+}
+
+class Rest {
+  static get URL() {
+    return 'https://api.todoist.com';
   }
   constructor(token) {
-    this.token = token;
-    this.header = { 'Authorization': 'Bearer ' + token };
+    this.setHeader(token);
   }
   createTask(task) {
-    const request = bent(TodoistApi.URL, 'POST', 'json', 200);
+    const request = bent(Rest.URL, 'POST', 'json', 200);
     const body = {
       content: '',
       project_id: null,
@@ -33,16 +51,19 @@ class TodoistApi {
         delete body[key];
       }
     }
-    return request('', body, this.header);
+    return request('/rest/v1/tasks', body, this.header);
   }
   readTasks() {
-    const request = bent(TodoistApi.URL, 'GET', 'json', 200);
-    return request('', null, this.header);
+    const request = bent(Rest.URL, 'GET', 'json', 200);
+    return request('/rest/v1/tasks', null, this.header);
   }
   deleteTask(taskId) {
-    const request = bent(TodoistApi.URL, 'DELETE', null, 203);
-    return request('/' + taskId, null, this.header);
+    const request = bent(Rest.URL, 'DELETE', null, 203);
+    return request('/rest/v1/tasks/' + taskId, null, this.header);
+  }
+  setHeader(token) {
+    this.header = { 'Authorization': 'Bearer ' + token };
   }
 }
 
-export default TodoistApi;
+export { OAuth, Rest };
