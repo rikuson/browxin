@@ -1,19 +1,51 @@
 import { Component } from 'react';
-import Api from './lib/TodoistApi';
+import { nanoid } from 'nanoid';
+import { OAuth, Rest } from './lib/TodoistApi';
+import { getQuery } from './lib/util';
+import aes from 'crypto-js/aes';
+import enc from 'crypto-js/enc-utf8';
 
 class TodoistWidget extends Component {
   constructor() {
     super();
     this.state = {
       tasks: [],
+      token: '',
     };
+    if (window.localStorage.todoist_token) {
+      this.state.token = window.localStorage.todoist_token;
+    }
   }
-  handleSubmitToken(token) {
-    const api = new Api(token);
-    api.readTasks().then(tasks => this.setState({ tasks }));
+  componentDidMount() {
+    const query = getQuery();
+    if ('state' in query && aes.decrypt(decodeURIComponent(query.state), window.localStorage.iv).toString(enc) === 'todoist') {
+      window.localStorage.removeItem('iv');
+      const api = new OAuth();
+      api.fetchToken(query.code).then(token => this.setState({ token }));
+    } else if (this.state.token) {
+      const api = new Rest(this.state.token);
+      api.readTasks().then(tasks => this.setState({ tasks })).catch(err => {
+        console.error(err);
+        window.localStorage.removeItem('todoist_token');
+        this.setState({ token: '' });
+      });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (!prevState.token && this.state.token) {
+      const api = new Rest(this.state.token);
+      window.localStorage.setItem('todoist_token', this.state.token);
+      api.readTasks().then(tasks => this.setState({ tasks }));
+    }
+  }
+  authorize() {
+    const iv = nanoid();
+    window.localStorage.setItem('iv', iv);
+    const state = aes.encrypt('todoist', iv).toString();
+    window.location.href = `https://todoist.com/oauth/authorize?client_id=${process.env.REACT_APP_TODOIST_CLIENT_ID}&scope=task:add,data:read_write&state=${state}`;
   }
   render() {
-    return this.state.tasks.length ? <TaskList tasks={this.state.tasks} /> : <Config onSubmitToken={token => this.handleSubmitToken(token)} />;
+    return this.state.token ? <TaskList tasks={this.state.tasks} /> : <Config onClick={this.authorize} />;
   }
 }
 
@@ -27,34 +59,8 @@ function TaskList(props) {
   );
 }
 
-class Config extends Component {
-  constructor() {
-    super();
-    this.state = {
-      token: '',
-    };
-  }
-  handleChange(e) {
-    const token = e.target.value;
-    this.setState({ token });
-  }
-  handleSubmit(e) {
-    e.preventDefault();
-    this.props.onSubmitToken(this.state.token);
-  }
-  render() {
-    return (
-      <form className="p-3" onSubmit={e => this.handleSubmit(e)}>
-        <div className="form-group">
-          <label htmlFor="todoist-token">Api Token</label>
-          <input type="text" className="form-control" id="todoist-token" aria-describedby="tokenHelp" onChange={e => this.handleChange(e)} value={this.state.token} />
-          <small id="tokenHelp" className="form-text text-muted">You can check your token <a href="https://todoist.com/prefs/integrations" target="_blank" rel="noreferrer">here</a>.</small>
-        </div>
-        <div className="text-right">
-          <button type="submit" className="btn btn-success">Save</button>
-        </div>
-      </form>
-    );
-  }
+function Config(props) {
+  return <button className="btn btn-success m-2" onClick={e => props.onClick(e)}>Authorize</button>
 }
+
 export default TodoistWidget;

@@ -15,7 +15,7 @@ class App extends Component {
       <div id="app">
         <div className="container">
           <h1 className="display-3">Browxin</h1>
-          <p className="lead"><ContentEditable html="Browse in cross-platform!" /></p>
+          <ContentEditable className="lead mb-3" html="Browse in cross-platform!" />
           <CommandLine />
           <ul className="nav nav-tabs" role="tablist">
             {App.WIDGETS.map((props, i) => <WidgetNavItem className={i === 0 ? 'active' : ''} key={props.id} {...props} />)}
