@@ -32,7 +32,7 @@ class CommandLine extends Component {
     const dft = CommandLine.SEARCH_ENGINES[0];
     return (
       <form className="input-group" action={dft.url} method="GET">
-        <input name={dft.param} className="form-control" style={{ margin: 1 }} type="search" placeholder="Search..." onChange={e => this.handleChange(e)} value={this.state.value} />
+        <input name={dft.param} className="form-control" style={{ margin: 1 }} type="search" placeholder="Search..." onChange={e => this.handleChange(e)} value={this.state.value} autoFocus={this.props.autoFocus} />
         <div className="input-group-append">
           <div className="btn-group" role="group">
             <button className="btn btn-secondary" style={{ borderRadius: 0 }} type="submit"><FontAwesomeIcon icon={dft.icon} /></button>

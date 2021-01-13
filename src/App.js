@@ -8,7 +8,7 @@ function App() {
     <div className={styles.container}>
       <h1 className="display-3">Browxin</h1>
       <p className="lead"><ContentEditable html="Browse in cross-platform!" /></p>
-      <CommandLine />
+      <CommandLine autoFocus={true} />
     </div>
   );
 }
