@@ -1,6 +1,5 @@
 import './App.scss';
 import { Component } from 'react';
-import ContentEditable from 'react-contenteditable';
 import CommandLine from './CommandLine';
 import { TodoistWidget } from './Widgets';
 
