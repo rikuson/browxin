@@ -68,7 +68,7 @@ class TodoistWidget extends Component {
 function TaskList(props) {
   return (
     <ul className="list-group list-group-flush">
-      {props.tasks.map(task => (
+      {props.tasks.sort((a, b) => a.created < b.created).map(task => (
         <li key={task.id} className="list-group-item">
           <div className="form-check">
             <input className="form-check-input" type="checkbox" onChange={e => props.onChange(e)} value={task.id} /> {task.content}
