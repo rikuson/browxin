@@ -16,6 +16,7 @@ class App extends Component {
     super();
     this.state = {
       isSetting: false,
+      hasThemeChanged: false,
       theme: window.localStorage.theme ? window.localStorage.theme : defaultTheme,
     };
   }
@@ -25,12 +26,13 @@ class App extends Component {
   changeTheme(e) {
     window.localStorage.theme = e.target.value;
     loadTheme();
-    this.setState({ theme: e.target.value });
+    this.setState({ theme: e.target.value, hasThemeChanged: true });
   }
   render() {
     return (
       <div id="app">
         <div className="container">
+          {this.state.hasThemeChanged ? <Alert /> : ''}
           <button type="button" className="config float-right" onClick={() => this.toggleSetting()}>
             {this.state.isSetting ? <span aria-label="Close">&times;</span> : <i className="icon-equalizer" />}
           </button>
@@ -39,6 +41,24 @@ class App extends Component {
       </div>
     );
   }
+}
+
+function Alert() {
+  return (
+    <div className="alert alert-info" role="alert">
+      Page needs to be reloaded.
+      <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <hr />
+      <div className="text-right">
+        <a className="btn btn-primary" href="./">Reload now</a>
+        <button type="button" className="btn btn-link" data-dismiss="alert" aria-label="Close">
+          Later
+        </button>
+      </div>
+    </div>
+  );
 }
 
 function Content() {
