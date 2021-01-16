@@ -1,15 +1,18 @@
+import 'jquery';
+import 'bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { loadTheme } from './lib/theme';
 import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
+loadTheme.then(() => ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
-);
+));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

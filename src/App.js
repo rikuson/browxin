@@ -1,3 +1,5 @@
+import 'jquery';
+import 'bootstrap';
 import './App.scss';
 import { Component } from 'react';
 import CommandLine from './CommandLine';
@@ -19,7 +21,7 @@ class App extends Component {
           <ul className="nav nav-tabs" role="tablist">
             {App.WIDGETS.map((props, i) => <WidgetNavItem className={i === 0 ? 'active' : ''} key={props.id} {...props} />)}
           </ul>
-          <div className="tab-content">
+          <div className="tab-content jumbotron">
             {App.WIDGETS.map((props, i) => <Widget className={i === 0 ? 'active show' : ''} key={props.id} {...props} />)}
           </div>
         </div>

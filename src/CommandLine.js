@@ -1,6 +1,3 @@
-import 'bootswatch/dist/slate/bootstrap.min.css';
-import 'jquery';
-import 'bootstrap';
 import { Component } from 'react';
 
 function DropdownItem(props) {

@@ -1,4 +1,4 @@
-const bent = require('bent')
+import bent from 'bent';
 
 class OAuth {
   static get URL() {
