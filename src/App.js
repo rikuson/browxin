@@ -15,23 +15,26 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      setting: false,
+      isSetting: false,
+      theme: window.localStorage.theme ? window.localStorage.theme : defaultTheme,
     };
   }
   toggleSetting() {
-    this.setState({ setting: !this.state.setting });
+    this.setState({ isSetting: !this.state.isSetting });
   }
   changeTheme(e) {
-    const theme = themes[e.target.value];
-    window.localStorage.theme = theme;
+    window.localStorage.theme = e.target.value;
     loadTheme();
+    this.setState({ theme: e.target.value });
   }
   render() {
     return (
       <div id="app">
         <div className="container">
-          <button type="button" className="btn btn-lg btn-secondary float-right" onClick={() => this.toggleSetting()}><i className="icon-equalizer" /></button>
-          {this.state.setting ? <Config onChange={e => this.changeTheme(e)} /> : <Content />}
+          <button type="button" className="config float-right" onClick={() => this.toggleSetting()}>
+            {this.state.isSetting ? <span aria-label="Close">&times;</span> : <i className="icon-equalizer" />}
+          </button>
+          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.state.theme} /> : <Content />}
         </div>
       </div>
     );
@@ -54,13 +57,14 @@ function Content() {
   );
 }
 
-function Config(props) {
+function Settings(props) {
   return (
     <div className="pt-5">
+      <h2 className="display-4">Settings</h2>
       <div className="form-group">
-        <label for="config-theme">Theme</label>
-        <select onChange={props.onChange} className="form-control" id="config-theme">
-          {themes.map((theme, i) => <option value={i} selected={theme === (window.localStorage.theme || defaultTheme)}>{theme}</option>)}
+        <label htmlFor="config-theme">Theme</label>
+        <select onChange={props.onChange} className="form-control" id="config-theme" value={props.theme}>
+          {themes.map((theme, i) => <option key={`theme-${i}`}>{theme}</option>)}
         </select>
       </div>
     </div>
