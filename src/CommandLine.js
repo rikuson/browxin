@@ -30,8 +30,8 @@ class CommandLine extends Component {
         <input name={dft.param} className="form-control" style={{ margin: 1 }} type="search" placeholder="Search..." onChange={e => this.handleChange(e)} value={this.state.value} autoFocus={this.props.autoFocus} />
         <div className="input-group-append">
           <div className="btn-group" role="group">
-            <button className="btn btn-secondary" style={{ borderRadius: 0 }} type="submit">{dft.icon}</button>
-            <button id="searchEngineDropdown" type="button" className="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+            <button className="btn btn-primary" style={{ borderRadius: 0 }} type="submit">{dft.icon}</button>
+            <button id="searchEngineDropdown" type="button" className="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
             <ul className="dropdown-menu dropdown-menu-right" aria-labelledby="searchEngineDropdown">
               {CommandLine.SEARCH_ENGINES.map((props, i) => <DropdownItem key={i} value={this.state.value} {...props} />)}
             </ul>

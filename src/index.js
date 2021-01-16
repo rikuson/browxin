@@ -7,7 +7,7 @@ import './index.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-loadTheme.then(() => ReactDOM.render(
+loadTheme().then(() => ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
