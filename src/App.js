@@ -63,9 +63,12 @@ function Settings(props) {
       <h2 className="display-4">Settings</h2>
       <div className="form-group">
         <label htmlFor="config-theme">Theme</label>
-        <select onChange={props.onChange} className="form-control" id="config-theme" value={props.theme}>
+        <select onChange={props.onChange} className="form-control" id="config-theme" value={props.theme} aria-describedby="theme-help-text">
           {themes.map((theme, i) => <option key={`theme-${i}`}>{theme}</option>)}
         </select>
+        <small id="theme-help-text" className="form-text text-muted">
+          It requires page reloading. You can see preview of themes from <a target="_blank" href="https://bootswatch.com" rel="noreferrer">bootswatch</a>.
+        </small>
       </div>
     </div>
   );
