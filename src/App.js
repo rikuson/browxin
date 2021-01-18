@@ -79,7 +79,7 @@ function Content() {
 
 function Settings(props) {
   return (
-    <div className="pt-5">
+    <div className="pt-4">
       <h2 className="display-4">Settings</h2>
       <div className="form-group">
         <label htmlFor="config-theme">Theme</label>

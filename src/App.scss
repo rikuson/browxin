@@ -26,5 +26,9 @@
     position: absolute;
     top: 0;
     right: 15px;
+    &:active,
+    &:focus {
+      outline: none;
+    }
   }
 }
