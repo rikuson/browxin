@@ -2,6 +2,7 @@
   .container {
     max-width: 900px;
     margin-top: 10vh;
+    position: relative;
   }
 
   .nav {
@@ -22,5 +23,8 @@
     color: white;
     border: none;
     font-size: 1.5rem;
+    position: absolute;
+    top: 0;
+    right: 15px;
   }
 }

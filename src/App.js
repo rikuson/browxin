@@ -33,10 +33,10 @@ class App extends Component {
       <div id="app">
         <div className="container">
           {this.state.hasThemeChanged ? <Alert /> : ''}
+          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.state.theme} /> : <Content />}
           <button type="button" className="config float-right" onClick={() => this.toggleSetting()}>
             {this.state.isSetting ? <span aria-label="Close">&times;</span> : <i className="icon-equalizer" />}
           </button>
-          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.state.theme} /> : <Content />}
         </div>
       </div>
     );
