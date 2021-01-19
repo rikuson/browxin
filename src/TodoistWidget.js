@@ -21,7 +21,10 @@ class TodoistWidget extends Component {
     if ('state' in query && aes.decrypt(decodeURIComponent(query.state), window.localStorage.iv).toString(enc) === 'todoist') {
       window.localStorage.removeItem('iv');
       const api = new OAuth();
-      api.fetchToken(query.code).then(token => this.setState({ token }));
+      api.fetchToken(query.code).then(token => {
+        window.localStorage.setItem('todoist_token', token);
+        window.location.href = '/';
+      });
     } else if (this.state.token) {
       const api = new Rest(this.state.token);
       api.readTasks().then(tasks => this.setState({ tasks })).catch(err => {
@@ -29,13 +32,6 @@ class TodoistWidget extends Component {
         window.localStorage.removeItem('todoist_token');
         this.setState({ token: '' });
       });
-    }
-  }
-  componentDidUpdate(prevProps, prevState) {
-    if (!prevState.token && this.state.token) {
-      const api = new Rest(this.state.token);
-      window.localStorage.setItem('todoist_token', this.state.token);
-      api.readTasks().then(tasks => this.setState({ tasks }));
     }
   }
   authorize() {
