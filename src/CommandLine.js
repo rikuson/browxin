@@ -11,6 +11,8 @@ class CommandLine extends Component {
     return [
       { name: 'Google', icon: <i className="icon-google" />, url: 'https://www.google.com/search', param: 'q' },
       { name: 'Twitter', icon: <i className="icon-twitter" />, url: 'https://twitter.com/search', param: 'q' },
+      { name: 'Wikipedia', icon: <i className="icon-wikipedia" />, url: 'https://en.wikipedia.org/w/index.php', param: 'search' },
+      { name: 'YouTube', icon: <i className="icon-youtube" />, url: 'https://www.youtube.com/results', param: 'search_query' },
     ];
   }
   constructor() {
