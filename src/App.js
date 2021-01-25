@@ -4,7 +4,7 @@ import './App.scss';
 import { Component } from 'react';
 import { loadTheme, themes, defaultTheme } from './lib/theme';
 import CommandLine from './CommandLine';
-import { TodoistWidget, TodoistWidgetNav } from './TodoistWidget';
+import { TodoistWidget, TodoistWidgetNav } from './widgets/todoist/TodoistWidget';
 
 class App extends Component {
   static get WIDGETS() {

@@ -5,11 +5,15 @@ import ReactDOM from 'react-dom';
 import { loadTheme } from './lib/theme';
 import './index.scss';
 import App from './App';
+import store from './store';
+import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
 
 loadTheme().then(() => ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 ));

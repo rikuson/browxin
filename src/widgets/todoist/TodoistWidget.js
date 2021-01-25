@@ -1,9 +1,11 @@
 import { Component } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { nanoid } from 'nanoid';
-import { OAuth, Rest } from './lib/TodoistApi';
-import { getQuery } from './lib/util';
+import { OAuth, Rest } from '../../lib/TodoistApi';
+import { getQuery } from '../../lib/util';
 import aes from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
+import { setToken } from './todoistSlice';
 
 export class TodoistWidget extends Component {
   constructor() {
