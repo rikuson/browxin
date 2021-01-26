@@ -20,11 +20,11 @@ code {
 
 @font-face {
   font-family: '#{$icomoon-font-family}';
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?6aqo06');
-  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?6aqo06#iefix') format('embedded-opentype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?6aqo06') format('truetype'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?6aqo06') format('woff'),
-    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?6aqo06##{$icomoon-font-family}') format('svg');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?3xlqqd');
+  src:  url('#{$icomoon-font-path}/#{$icomoon-font-family}.eot?3xlqqd#iefix') format('embedded-opentype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.ttf?3xlqqd') format('truetype'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.woff?3xlqqd') format('woff'),
+    url('#{$icomoon-font-path}/#{$icomoon-font-family}.svg?3xlqqd##{$icomoon-font-family}') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -85,4 +85,13 @@ i {
     content: $icon-twitter;
   }
 }
-
+.icon-mdn {
+  &:before {
+    content: $icon-mdn;
+  }
+}
+.icon-php {
+  &:before {
+    content: $icon-php;
+  }
+}
