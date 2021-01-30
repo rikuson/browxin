@@ -4,12 +4,12 @@ import './App.scss';
 import { Component } from 'react';
 import { loadTheme, themes, defaultTheme } from './lib/theme';
 import CommandLine from './CommandLine';
-import { TodoistWidget } from './Widgets';
+import { TodoistWidget, TodoistWidgetNav } from './TodoistWidget';
 
 class App extends Component {
   static get WIDGETS() {
     return [
-      { id: 'todoist', name: 'Todoist', icon: <i className="icon-todoist" />, widget: <TodoistWidget /> },
+      { id: 'todoist', nav: TodoistWidgetNav, content: TodoistWidget },
     ];
   }
   constructor() {
@@ -68,7 +68,7 @@ function Content() {
       <p className="lead">Browse in cross-platform!</p>
       <CommandLine />
       <ul className="nav nav-tabs" role="tablist">
-        {App.WIDGETS.map((props, i) => <WidgetNavItem className={i === 0 ? 'active' : ''} key={props.id} {...props} />)}
+        {App.WIDGETS.map((props, i) => <WidgetNav active={i === 0} key={props.id} {...props} />)}
       </ul>
       <div className="tab-content jumbotron">
         {App.WIDGETS.map((props, i) => <Widget className={i === 0 ? 'active show' : ''} key={props.id} {...props} />)}
@@ -95,16 +95,16 @@ function Settings(props) {
 }
 
 function Widget(props) {
+  const Content = props.content;
   return (
-    <div className={`tab-pane fade ${props.className}`} id={props.id} role="tabpanel" aria-labelledby={`${props.id}-tab`}>{props.widget}</div>
+    <div className={`tab-pane fade ${props.className}`} id={props.id} role="tabpanel" aria-labelledby={`${props.id}-tab`}><Content /></div>
   );
 }
 
-function WidgetNavItem(props) {
+function WidgetNav(props) {
+  const Nav = props.nav;
   return (
-    <li className="nav-item" role="presentation">
-      <a className={`nav-link ${props.className}`} id={`${props.id}-tab`} data-toggle="tab" href={`#${props.id}`} role="tab" aria-controls={props.id} aria-selected="true">{props.icon} {props.name}</a>
-    </li>
+    <li className="nav-item dropdown" role="presentation"><Nav id={`${props.id}-tab`} active={props.active} /></li>
   );
 }
 

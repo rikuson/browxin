@@ -5,7 +5,7 @@ import { getQuery } from './lib/util';
 import aes from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
 
-class TodoistWidget extends Component {
+export class TodoistWidget extends Component {
   constructor() {
     super();
     this.state = {
@@ -79,4 +79,52 @@ function Config(props) {
   return <button className="btn btn-success m-2" onClick={e => props.onClick(e)}>Authorize</button>
 }
 
-export default TodoistWidget;
+export class TodoistWidgetNav extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      projects: [],
+    };
+    if (window.localStorage.todoist_token) {
+      this.state.token = window.localStorage.todoist_token;
+    }
+  }
+  componentDidMount() {
+    if (this.state.token) {
+      const api = new Rest(this.state.token);
+      api.readProjects().then(projects => {
+        this.setState({ projects });
+      }).catch(err => {
+        console.error(err);
+        window.localStorage.removeItem('todoist_token');
+        this.setState({ token: '' });
+      });
+    }
+  }
+  render() {
+    const dropdownAttr = {
+      href: '#',
+      role: 'button',
+      className: 'nav-link dropdown-toggle active',
+      'aria-haspopup': 'true',
+      'aria-expanded': 'false',
+      'data-toggle': 'dropdown',
+    };
+    const buttonAttr = {
+      href: `#${this.props.id}`,
+      role: 'tab',
+      className: 'nav-link',
+      'aria-controls': this.props.id,
+      'data-toggle': 'tab',
+      'aria-selected': 'true',
+    };
+    return (
+      <>
+        <a {...(this.props.active ? dropdownAttr : buttonAttr)} ><i className="icon-todoist" /> Todoist</a>
+        <div className="dropdown-menu">
+          {this.state.projects.map(project => <a key={project.id} className="dropdown-item" href={`#todoist-${project.name}`}>{project.name}</a>)}
+        </div>
+      </>
+    );
+  }
+}
