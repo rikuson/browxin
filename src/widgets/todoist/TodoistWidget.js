@@ -1,22 +1,18 @@
 import { Component } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { connect } from 'react-redux';
 import { nanoid } from 'nanoid';
 import { OAuth, Rest } from '../../lib/TodoistApi';
 import { getQuery } from '../../lib/util';
 import aes from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
-import { setToken } from './todoistSlice';
+import { setToken, removeToken } from './todoistSlice';
 
-export class TodoistWidget extends Component {
+class TodoistWidget extends Component {
   constructor() {
     super();
     this.state = {
       tasks: [],
-      token: '',
     };
-    if (window.localStorage.todoist_token) {
-      this.state.token = window.localStorage.todoist_token;
-    }
   }
   componentDidMount() {
     const query = getQuery();
@@ -24,15 +20,14 @@ export class TodoistWidget extends Component {
       window.localStorage.removeItem('iv');
       const api = new OAuth();
       api.fetchToken(query.code).then(token => {
-        window.localStorage.setItem('todoist_token', token);
+        this.props.setToken(token);
         window.location.href = '/';
       });
-    } else if (this.state.token) {
-      const api = new Rest(this.state.token);
+    } else if (this.props.token) {
+      const api = new Rest(this.props.token);
       api.readTasks().then(tasks => this.setState({ tasks })).catch(err => {
         console.error(err);
-        window.localStorage.removeItem('todoist_token');
-        this.setState({ token: '' });
+        this.props.removeToken();
       });
     }
   }
@@ -44,7 +39,7 @@ export class TodoistWidget extends Component {
   }
   handleChange(e) {
     const id = e.target.value;
-    const api = new Rest(this.state.token);
+    const api = new Rest(this.props.token);
     api.completeTask(id);
     window.setTimeout(() => {
       this.setState({ tasks: this.state.tasks.filter(task => String(task.id) !== id) });
@@ -54,7 +49,7 @@ export class TodoistWidget extends Component {
     return (
       <div id="widget-todoist">
         {
-          this.state.token ?
+          this.props.token ?
           <TaskList tasks={this.state.tasks} onChange={e => this.handleChange(e)} /> :
           <Config onClick={this.authorize} />
         }
@@ -81,25 +76,19 @@ function Config(props) {
   return <button className="btn btn-success m-2" onClick={e => props.onClick(e)}>Authorize</button>
 }
 
-export class TodoistWidgetNav extends Component {
+class TodoistWidgetNav extends Component {
   constructor(props) {
     super(props);
     this.state = {
       projects: [],
     };
-    if (window.localStorage.todoist_token) {
-      this.state.token = window.localStorage.todoist_token;
-    }
   }
   componentDidMount() {
-    if (this.state.token) {
-      const api = new Rest(this.state.token);
-      api.readProjects().then(projects => {
-        this.setState({ projects });
-      }).catch(err => {
+    if (this.props.token) {
+      const api = new Rest(this.props.token);
+      api.readProjects().then(projects => this.setState({ projects })).catch(err => {
         console.error(err);
-        window.localStorage.removeItem('todoist_token');
-        this.setState({ token: '' });
+        this.props.removeToken();
       });
     }
   }
@@ -130,3 +119,21 @@ export class TodoistWidgetNav extends Component {
     );
   }
 }
+
+TodoistWidget = connect(
+  state => ({ token: state.todoist.token }),
+  dispatch => ({
+    setToken: token => dispatch(setToken(token)),
+    removeToken: () => dispatch(removeToken()),
+  })
+)(TodoistWidget);
+
+TodoistWidgetNav = connect(
+  state => ({ token: state.todoist.token }),
+  dispatch => ({
+    setToken: token => dispatch(setToken(token)),
+    removeToken: () => dispatch(removeToken()),
+  })
+)(TodoistWidgetNav);
+
+export { TodoistWidget, TodoistWidgetNav };

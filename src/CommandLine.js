@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import { connect } from 'react-redux';
+import { setText } from './commandLineSlice';
 
 function DropdownItem(props) {
   return (
@@ -25,6 +27,7 @@ class CommandLine extends Component {
   }
   handleChange(e) {
     const { value } = e.target;
+    this.props.setText(e);
     this.setState({ value });
   }
   render() {
@@ -46,4 +49,9 @@ class CommandLine extends Component {
   }
 }
 
-export default CommandLine;
+export default connect(
+  state => ({ text: state.commandLine.text }),
+  dispatch => ({
+    setText: e => dispatch(setText(e.target.value)),
+  })
+)(CommandLine);

@@ -9,6 +9,7 @@ import store from './store';
 import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
 
+// FIXME: Provider is not used
 loadTheme().then(() => ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
