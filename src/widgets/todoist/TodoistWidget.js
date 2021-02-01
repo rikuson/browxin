@@ -5,15 +5,16 @@ import { OAuth, Rest } from '../../lib/TodoistApi';
 import { getQuery } from '../../lib/util';
 import aes from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
-import { setToken, removeToken } from './todoistSlice';
+import {
+  setToken,
+  removeToken,
+  setProjects,
+  openProject,
+  setTasks,
+  completeTask,
+} from './todoistSlice';
 
 class TodoistWidget extends Component {
-  constructor() {
-    super();
-    this.state = {
-      tasks: [],
-    };
-  }
   componentDidMount() {
     const query = getQuery();
     if ('state' in query && aes.decrypt(decodeURIComponent(query.state), window.localStorage.iv).toString(enc) === 'todoist') {
@@ -25,7 +26,7 @@ class TodoistWidget extends Component {
       });
     } else if (this.props.token) {
       const api = new Rest(this.props.token);
-      api.readTasks().then(tasks => this.setState({ tasks })).catch(err => {
+      api.readTasks().then(tasks => this.props.setTasks(tasks)).catch(err => {
         console.error(err);
         this.props.removeToken();
       });
@@ -41,16 +42,17 @@ class TodoistWidget extends Component {
     const id = e.target.value;
     const api = new Rest(this.props.token);
     api.completeTask(id);
-    window.setTimeout(() => {
-      this.setState({ tasks: this.state.tasks.filter(task => String(task.id) !== id) });
-    }, 300);
+    window.setTimeout(() => this.props.completeTask(id), 300);
+  }
+  getActiveProject() {
+    return this.props.projects.find(p => p.active);
   }
   render() {
     return (
       <div id="widget-todoist">
         {
           this.props.token ?
-          <TaskList tasks={this.state.tasks} onChange={e => this.handleChange(e)} /> :
+          <TaskList tasks={this.props.tasks} project={this.getActiveProject()} onChange={e => this.handleChange(e)} /> :
           <Config onClick={this.authorize} />
         }
       </div>
@@ -61,7 +63,7 @@ class TodoistWidget extends Component {
 function TaskList(props) {
   return (
     <ul className="list-group list-group-flush">
-      {props.tasks.sort((a, b) => a.order < b.order ? 1 : -1).map(task => (
+      {props.tasks.filter(t => t.project_id === props.project.id).sort((a, b) => a.order < b.order ? 1 : -1).map(task => (
         <li key={task.id} className="list-group-item">
           <div className="form-check">
             <input className="form-check-input" type="checkbox" onChange={e => props.onChange(e)} value={task.id} /> {task.content}
@@ -77,16 +79,10 @@ function Config(props) {
 }
 
 class TodoistWidgetNav extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      projects: [],
-    };
-  }
   componentDidMount() {
     if (this.props.token) {
       const api = new Rest(this.props.token);
-      api.readProjects().then(projects => this.setState({ projects })).catch(err => {
+      api.readProjects().then(projects => this.props.setProjects(projects)).catch(err => {
         console.error(err);
         this.props.removeToken();
       });
@@ -113,7 +109,7 @@ class TodoistWidgetNav extends Component {
       <>
         <a {...(this.props.active ? dropdownAttr : buttonAttr)} ><i className="icon-todoist" /> Todoist</a>
         <div className="dropdown-menu">
-          {this.state.projects.map(project => <a key={project.id} className="dropdown-item" href={`#todoist-${project.name}`}>{project.name}</a>)}
+          {this.props.projects.map(project => <button key={project.id} className={'dropdown-item' + (project.active ? ' active' : '')} onClick={() => this.props.openProject(project.id)}>{project.name}</button>)}
         </div>
       </>
     );
@@ -121,18 +117,29 @@ class TodoistWidgetNav extends Component {
 }
 
 TodoistWidget = connect(
-  state => ({ token: state.todoist.token }),
+  state => ({
+    token: state.todoist.token,
+    projects: state.todoist.projects,
+    tasks: state.todoist.tasks,
+  }),
   dispatch => ({
     setToken: token => dispatch(setToken(token)),
     removeToken: () => dispatch(removeToken()),
+    setTasks: tasks => dispatch(setTasks(tasks)),
+    completeTask: taskId => dispatch(completeTask(taskId)),
   })
 )(TodoistWidget);
 
 TodoistWidgetNav = connect(
-  state => ({ token: state.todoist.token }),
+  state => ({
+    token: state.todoist.token,
+    projects: state.todoist.projects,
+  }),
   dispatch => ({
     setToken: token => dispatch(setToken(token)),
     removeToken: () => dispatch(removeToken()),
+    setProjects: projects => dispatch(setProjects(projects)),
+    openProject: projectId => dispatch(openProject(projectId)),
   })
 )(TodoistWidgetNav);
 
