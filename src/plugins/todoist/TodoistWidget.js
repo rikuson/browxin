@@ -51,7 +51,7 @@ class TodoistWidget extends Component {
         {
           this.props.token ?
           <TaskList tasks={this.props.tasks} project={this.getActiveProject()} onChange={e => this.handleChange(e)} /> :
-          <Config onClick={this.authorize} />
+          <Config onClick={() => this.authorize()} />
         }
       </div>
     );
