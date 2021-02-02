@@ -2,7 +2,8 @@ import 'jquery';
 import 'bootstrap';
 import './App.scss';
 import { Component } from 'react';
-import { loadTheme, themes, defaultTheme } from './lib/theme';
+import { connect } from 'react-redux';
+import { themes, actions } from './lib/theme';
 import CommandLine from './CommandLine';
 import { TodoistWidget, TodoistWidgetNav } from './plugins/todoist';
 
@@ -17,23 +18,21 @@ class App extends Component {
     this.state = {
       isSetting: false,
       hasThemeChanged: false,
-      theme: window.localStorage.theme ? window.localStorage.theme : defaultTheme,
     };
   }
   toggleSetting() {
     this.setState({ isSetting: !this.state.isSetting });
   }
   changeTheme(e) {
-    window.localStorage.theme = e.target.value;
-    loadTheme();
-    this.setState({ theme: e.target.value, hasThemeChanged: true });
+    this.props.setTheme(e.target.value);
+    this.setState({ hasThemeChanged: true });
   }
   render() {
     return (
       <div id="app">
         <div className="container">
           {this.state.hasThemeChanged ? <Alert /> : ''}
-          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.state.theme} /> : <Content />}
+          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.props.theme} /> : <Content />}
           <button type="button" className="config float-right" onClick={() => this.toggleSetting()}>
             {this.state.isSetting ? <span aria-label="Close">&times;</span> : <i className="icon-equalizer" />}
           </button>
@@ -108,4 +107,12 @@ function WidgetNav(props) {
   );
 }
 
-export default App;
+export default App = connect(
+  state => ({
+    theme: state.theme.theme,
+  }),
+  dispatch => ({
+    setTheme: theme => dispatch(actions.setTheme(theme)),
+    loadTheme: theme => dispatch(actions.loadTheme(theme)),
+  })
+)(App);

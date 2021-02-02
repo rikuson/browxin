@@ -7,6 +7,7 @@ import aes from 'crypto-js/aes';
 import enc from 'crypto-js/enc-utf8';
 import {
   setToken,
+  setIV,
   removeToken,
   setTasks,
   completeTask,
@@ -15,8 +16,7 @@ import {
 class TodoistWidget extends Component {
   componentDidMount() {
     const query = getQuery();
-    if ('state' in query && aes.decrypt(decodeURIComponent(query.state), window.localStorage.iv).toString(enc) === 'todoist') {
-      window.localStorage.removeItem('iv');
+    if ('state' in query && aes.decrypt(decodeURIComponent(query.state), this.props.iv).toString(enc) === 'todoist') {
       const api = new OAuth();
       api.fetchToken(query.code).then(token => {
         this.props.setToken(token);
@@ -32,7 +32,7 @@ class TodoistWidget extends Component {
   }
   authorize() {
     const iv = nanoid();
-    window.localStorage.setItem('iv', iv);
+    this.props.setIV(iv);
     const state = aes.encrypt('todoist', iv).toString();
     window.location.href = `https://todoist.com/oauth/authorize?client_id=${process.env.REACT_APP_TODOIST_CLIENT_ID}&scope=task:add,data:read_write&state=${state}`;
   }
@@ -81,9 +81,11 @@ export default TodoistWidget = connect(
     token: state.todoist.token,
     projects: state.todoist.projects,
     tasks: state.todoist.tasks,
+    iv: state.todoist.iv,
   }),
   dispatch => ({
     setToken: token => dispatch(setToken(token)),
+    setIV: iv => dispatch(setIV(iv)),
     removeToken: () => dispatch(removeToken()),
     setTasks: tasks => dispatch(setTasks(tasks)),
     completeTask: taskId => dispatch(completeTask(taskId)),

@@ -2,16 +2,32 @@ import 'jquery';
 import 'bootstrap';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { loadTheme } from './lib/theme';
+import bent from 'bent';
 import './index.scss';
 import App from './App';
 import store from './store';
 import { Provider } from 'react-redux';
 import reportWebVitals from './reportWebVitals';
 
-// FIXME: Provider is not used
-loadTheme().then(() => ReactDOM.render(
+const state = store.getState();
+
+// Fetch stylesheet from CDN
+function loadTheme() {
+  return new Promise(resolve => {
+    const url = `https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/${state.theme.theme}/bootstrap.min.css`;
+    const request = bent('string', 200);
+    request(url)
+      .then(css => resolve(<style>{css}</style>))
+      .catch(() => {
+        import(`bootswatch/dist/${state.theme.theme}/bootstrap.min.css`);
+        resolve([]);
+      });
+  });
+}
+
+loadTheme().then(theme => ReactDOM.render(
   <React.StrictMode>
+    {theme}
     <Provider store={store}>
       <App />
     </Provider>

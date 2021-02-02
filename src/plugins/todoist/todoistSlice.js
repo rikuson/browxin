@@ -3,18 +3,20 @@ import { createSlice } from '@reduxjs/toolkit';
 const todoistSlice = createSlice({
   name: 'todoist',
   initialState: {
-    token: window.localStorage.todoist_token || '',
+    token: '',
     projects: [],
     tasks: [],
+    iv: '',
   },
   reducers: {
     setToken: (state, action) => {
       state.token = action.payload;
-      window.localStorage.setItem('todoist_token', state.token);
+    },
+    setIV: (state, action) => {
+      state.iv = action.payload;
     },
     removeToken: (state, action) => {
       state.token = '';
-      window.localStorage.removeItem('todoist_token');
     },
     setProjects: (state, action) => {
       state.projects = action.payload.map((project, i) => ({ ...project, active: i === 0 }));
@@ -31,6 +33,14 @@ const todoistSlice = createSlice({
   },
 });
 
-export const { setToken, removeToken, setProjects, openProject, setTasks, completeTask } = todoistSlice.actions;
+export const {
+  setToken,
+  setIV,
+  removeToken,
+  setProjects,
+  openProject,
+  setTasks,
+  completeTask,
+} = todoistSlice.actions;
 
 export default todoistSlice.reducer;
