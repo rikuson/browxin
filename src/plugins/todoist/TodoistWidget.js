@@ -8,8 +8,6 @@ import enc from 'crypto-js/enc-utf8';
 import {
   setToken,
   removeToken,
-  setProjects,
-  openProject,
   setTasks,
   completeTask,
 } from './todoistSlice';
@@ -78,45 +76,7 @@ function Config(props) {
   return <button className="btn btn-success m-2" onClick={e => props.onClick(e)}>Authorize</button>
 }
 
-class TodoistWidgetNav extends Component {
-  componentDidMount() {
-    if (this.props.token) {
-      const api = new Rest(this.props.token);
-      api.readProjects().then(projects => this.props.setProjects(projects)).catch(err => {
-        console.error(err);
-        this.props.removeToken();
-      });
-    }
-  }
-  render() {
-    const dropdownAttr = {
-      href: '#',
-      role: 'button',
-      className: 'nav-link dropdown-toggle active',
-      'aria-haspopup': 'true',
-      'aria-expanded': 'false',
-      'data-toggle': 'dropdown',
-    };
-    const buttonAttr = {
-      href: `#${this.props.id}`,
-      role: 'tab',
-      className: 'nav-link',
-      'aria-controls': this.props.id,
-      'data-toggle': 'tab',
-      'aria-selected': 'true',
-    };
-    return (
-      <>
-        <a {...(this.props.active ? dropdownAttr : buttonAttr)} ><i className="icon-todoist" /> Todoist</a>
-        <div className="dropdown-menu">
-          {this.props.projects.map(project => <button key={project.id} className={'dropdown-item' + (project.active ? ' active' : '')} onClick={() => this.props.openProject(project.id)}>{project.name}</button>)}
-        </div>
-      </>
-    );
-  }
-}
-
-TodoistWidget = connect(
+export default TodoistWidget = connect(
   state => ({
     token: state.todoist.token,
     projects: state.todoist.projects,
@@ -129,18 +89,3 @@ TodoistWidget = connect(
     completeTask: taskId => dispatch(completeTask(taskId)),
   })
 )(TodoistWidget);
-
-TodoistWidgetNav = connect(
-  state => ({
-    token: state.todoist.token,
-    projects: state.todoist.projects,
-  }),
-  dispatch => ({
-    setToken: token => dispatch(setToken(token)),
-    removeToken: () => dispatch(removeToken()),
-    setProjects: projects => dispatch(setProjects(projects)),
-    openProject: projectId => dispatch(openProject(projectId)),
-  })
-)(TodoistWidgetNav);
-
-export { TodoistWidget, TodoistWidgetNav };

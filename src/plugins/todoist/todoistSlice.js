@@ -13,8 +13,8 @@ const todoistSlice = createSlice({
       window.localStorage.setItem('todoist_token', state.token);
     },
     removeToken: (state, action) => {
-      // state.token = '';
-      // window.localStorage.removeItem('todoist_token');
+      state.token = '';
+      window.localStorage.removeItem('todoist_token');
     },
     setProjects: (state, action) => {
       state.projects = action.payload.map((project, i) => ({ ...project, active: i === 0 }));

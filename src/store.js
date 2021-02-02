@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import todoistReducer from './widgets/todoist/todoistSlice';
+import { todoistReducer } from './plugins/todoist';
 import commandLineReducer from './commandLineSlice';
 
 export default configureStore({
