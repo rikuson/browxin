@@ -12,7 +12,12 @@ class TodoistWidgetNav extends Component {
   componentDidMount() {
     if (this.props.token) {
       const api = new Rest(this.props.token);
-      api.readProjects().then(projects => this.props.setProjects(projects)).catch(err => {
+      api.readProjects().then(projects => {
+        this.props.setProjects(projects);
+        if (!projects.some(project => project.id === this.props.activeProject)) {
+          this.props.openProject(projects[0].id);
+        }
+      }).catch(err => {
         console.error(err);
         this.props.removeToken();
       });
@@ -50,6 +55,7 @@ export default TodoistWidgetNav = connect(
   state => ({
     token: state.todoist.token,
     projects: state.todoist.projects,
+    activeProject: state.todoist.activeProject,
   }),
   dispatch => ({
     setToken: token => dispatch(setToken(token)),

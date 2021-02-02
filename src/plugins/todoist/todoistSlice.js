@@ -7,6 +7,7 @@ const todoistSlice = createSlice({
     projects: [],
     tasks: [],
     iv: '',
+    activeProject: null,
   },
   reducers: {
     setToken: (state, action) => {
@@ -19,10 +20,10 @@ const todoistSlice = createSlice({
       state.token = '';
     },
     setProjects: (state, action) => {
-      state.projects = action.payload.map((project, i) => ({ ...project, active: i === 0 }));
+      state.projects = action.payload;
     },
     openProject: (state, action) => {
-      state.projects = state.projects.map(project =>  ({ ...project, active: project.id === action.payload }));
+      state.activeProject = action.payload;
     },
     setTasks: (state, action) => {
       state.tasks = action.payload;

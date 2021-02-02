@@ -42,15 +42,12 @@ class TodoistWidget extends Component {
     api.completeTask(id);
     window.setTimeout(() => this.props.completeTask(id), 300);
   }
-  getActiveProject() {
-    return this.props.projects.find(p => p.active);
-  }
   render() {
     return (
       <div id="widget-todoist">
         {
           this.props.token ?
-          <TaskList tasks={this.props.tasks} project={this.getActiveProject()} onChange={e => this.handleChange(e)} /> :
+          <TaskList tasks={this.props.tasks} project={this.props.activeProject} onChange={e => this.handleChange(e)} /> :
           <Config onClick={() => this.authorize()} />
         }
       </div>
@@ -61,7 +58,7 @@ class TodoistWidget extends Component {
 function TaskList(props) {
   return (
     <ul className="list-group list-group-flush">
-      {props.tasks.filter(t => t.project_id === props.project.id).sort((a, b) => a.order < b.order ? 1 : -1).map(task => (
+      {props.tasks.filter(t => t.project_id === props.project).sort((a, b) => a.order < b.order ? 1 : -1).map(task => (
         <li key={task.id} className="list-group-item">
           <div className="form-check">
             <input className="form-check-input" type="checkbox" onChange={e => props.onChange(e)} value={task.id} /> {task.content}
@@ -82,6 +79,7 @@ export default TodoistWidget = connect(
     projects: state.todoist.projects,
     tasks: state.todoist.tasks,
     iv: state.todoist.iv,
+    activeProject: state.todoist.activeProject,
   }),
   dispatch => ({
     setToken: token => dispatch(setToken(token)),
