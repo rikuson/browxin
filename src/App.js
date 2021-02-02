@@ -20,8 +20,11 @@ class App extends Component {
       hasThemeChanged: false,
     };
   }
-  toggleSetting() {
-    this.setState({ isSetting: !this.state.isSetting });
+  openSetting() {
+    this.setState({ isSetting: true });
+  }
+  closeSetting() {
+    this.setState({ isSetting: false });
   }
   changeTheme(e) {
     this.props.setTheme(e.target.value);
@@ -32,10 +35,7 @@ class App extends Component {
       <div id="app">
         <div className="container">
           {this.state.hasThemeChanged ? <Alert /> : ''}
-          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.props.theme} /> : <Content />}
-          <button type="button" className="config float-right" onClick={() => this.toggleSetting()}>
-            {this.state.isSetting ? <span aria-label="Close">&times;</span> : <i className="icon-equalizer" />}
-          </button>
+          {this.state.isSetting ? <Settings onChange={e => this.changeTheme(e)} theme={this.props.theme} onToggle={() => this.closeSetting()} /> : <Content onToggle={() => this.openSetting()} />}
         </div>
       </div>
     );
@@ -60,9 +60,9 @@ function Alert() {
   );
 }
 
-function Content() {
+function Content(props) {
   return (
-    <>
+    <div className="position-relative">
       <h1 className="display-3">Browxin</h1>
       <p className="lead">Browse in cross-platform!</p>
       <CommandLine />
@@ -72,13 +72,16 @@ function Content() {
       <div className="tab-content jumbotron">
         {App.WIDGETS.map((props, i) => <Widget className={i === 0 ? 'active show' : ''} key={props.id} {...props} />)}
       </div>
-    </>
+      <button type="button" className="config" onClick={props.onToggle}>
+        <i className="icon-equalizer" />
+      </button>
+    </div>
   );
 }
 
 function Settings(props) {
   return (
-    <div className="pt-4">
+    <div className="position-relative pt-4">
       <h2 className="display-4">Settings</h2>
       <div className="form-group">
         <label htmlFor="config-theme">Theme</label>
@@ -89,6 +92,9 @@ function Settings(props) {
           It requires page reloading. You can see preview of themes from <a target="_blank" href="https://bootswatch.com" rel="noreferrer">bootswatch</a>.
         </small>
       </div>
+      <button type="button" className="config" onClick={props.onToggle}>
+        <span aria-label="Close">&times;</span>
+      </button>
     </div>
   );
 }
