@@ -10,7 +10,7 @@ import { TodoistWidget, TodoistWidgetNav } from './plugins/todoist';
 class App extends Component {
   static get WIDGETS() {
     return [
-      { id: 'todoist', nav: TodoistWidgetNav, content: TodoistWidget },
+      { nav: TodoistWidgetNav, content: TodoistWidget },
     ];
   }
   constructor() {
@@ -67,10 +67,10 @@ function Content(props) {
       <p className="lead">Browse in cross-platform!</p>
       <CommandLine />
       <ul className="nav nav-tabs" role="tablist">
-        {App.WIDGETS.map((props, i) => <WidgetNav active={i === 0} key={props.id} {...props} />)}
+        {App.WIDGETS.map((props, i) => <WidgetNav active={i === 0} key={i} id={'widget-' + i} {...props} />)}
       </ul>
       <div className="tab-content jumbotron">
-        {App.WIDGETS.map((props, i) => <Widget className={i === 0 ? 'active show' : ''} key={props.id} {...props} />)}
+        {App.WIDGETS.map((props, i) => <Widget className={i === 0 ? 'active show' : ''} key={i} href={'widget-' + i} {...props} />)}
       </div>
       <button type="button" className="config" onClick={props.onToggle}>
         <i className="icon-equalizer" />
@@ -109,7 +109,7 @@ function Widget(props) {
 function WidgetNav(props) {
   const Nav = props.nav;
   return (
-    <li className="nav-item dropdown" role="presentation"><Nav id={`${props.id}-tab`} active={props.active} /></li>
+    <li className="nav-item dropdown" role="presentation"><Nav id={props.id + '-tab'} href={'#' + props.id} active={props.active} /></li>
   );
 }
 

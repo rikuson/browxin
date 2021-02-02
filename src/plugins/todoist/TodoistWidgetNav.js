@@ -33,7 +33,7 @@ class TodoistWidgetNav extends Component {
       'data-toggle': 'dropdown',
     };
     const buttonAttr = {
-      href: `#${this.props.id}`,
+      href: this.props.href,
       role: 'tab',
       className: 'nav-link',
       'aria-controls': this.props.id,
