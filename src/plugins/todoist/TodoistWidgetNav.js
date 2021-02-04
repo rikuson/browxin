@@ -44,7 +44,7 @@ class TodoistWidgetNav extends Component {
       <>
         <a {...(this.props.active ? dropdownAttr : buttonAttr)} ><i className="icon-todoist" /> Todoist</a>
         <div className="dropdown-menu">
-          {this.props.projects.map(project => <button key={project.id} className={'dropdown-item' + (project.active ? ' active' : '')} onClick={() => this.props.openProject(project.id)}>{project.name}</button>)}
+          {this.props.projects.map(project => <button key={project.id} className={'dropdown-item' + (project.id === this.props.activeProject ? ' active' : '')} onClick={() => this.props.openProject(project.id)}>{project.name}</button>)}
         </div>
       </>
     );
