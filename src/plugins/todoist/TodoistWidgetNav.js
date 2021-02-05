@@ -1,26 +1,14 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
-import { Rest } from '../../lib/TodoistApi';
 import {
-  setToken,
-  removeToken,
-  setProjects,
   openProject,
+  readProjects,
 } from './todoistSlice';
 
 class TodoistWidgetNav extends Component {
   componentDidMount() {
     if (this.props.token) {
-      const api = new Rest(this.props.token);
-      api.readProjects().then(projects => {
-        this.props.setProjects(projects);
-        if (!projects.some(project => project.id === this.props.activeProject)) {
-          this.props.openProject(projects[0].id);
-        }
-      }).catch(err => {
-        console.error(err);
-        this.props.removeToken();
-      });
+      this.props.readProjects();
     }
   }
   render() {
@@ -58,9 +46,7 @@ export default TodoistWidgetNav = connect(
     activeProject: state.todoist.activeProject,
   }),
   dispatch => ({
-    setToken: token => dispatch(setToken(token)),
-    removeToken: () => dispatch(removeToken()),
-    setProjects: projects => dispatch(setProjects(projects)),
     openProject: projectId => dispatch(openProject(projectId)),
+    readProjects: () => dispatch(readProjects()),
   })
 )(TodoistWidgetNav);
