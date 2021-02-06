@@ -1,9 +1,7 @@
 import { Component } from 'react';
 import { connect } from 'react-redux';
 import { nanoid } from 'nanoid';
-import { getQuery } from '../../lib/util';
-import aes from 'crypto-js/aes';
-import enc from 'crypto-js/enc-utf8';
+import { getQuery, decryptAuthState, encryptAuthState } from '../../lib/util';
 import {
   setIV,
   completeTask,
@@ -14,19 +12,16 @@ import {
 class TodoistWidget extends Component {
   componentDidMount() {
     const query = getQuery();
-    if ('state' in query && this.decryptAuthState(query) === 'todoist') {
+    if ('state' in query && decryptAuthState(query.state, this.props.iv) === 'todoist') {
       this.props.authorize(query).then(() => window.location.search = '');
     } else if (this.props.token) {
       this.props.readTasks();
     }
   }
-  decryptAuthState(query) {
-    return aes.decrypt(decodeURIComponent(query.state), this.props.iv).toString(enc);
-  }
   authorize() {
     const iv = nanoid();
     this.props.setIV(iv);
-    const state = aes.encrypt('todoist', iv).toString();
+    const state = encryptAuthState('todoist', iv);
     window.location.href = `https://todoist.com/oauth/authorize?client_id=${process.env.REACT_APP_TODOIST_CLIENT_ID}&scope=task:add,data:read_write&state=${state}`;
   }
   handleChange(e) {
