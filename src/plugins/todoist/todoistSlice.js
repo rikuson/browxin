@@ -14,9 +14,9 @@ export const completeTask = createAsyncThunk('todoist/completeTask', async (id, 
   return state.todoist.tasks.filter(task => task.id !== Number(id));
 });
 
-export const authorize = createAsyncThunk('todoist/authorize', async code => {
+export const authorize = createAsyncThunk('todoist/authorize', async query => {
   const api = new OAuth();
-  return await api.fetchToken(code);
+  return await api.fetchToken(query.code);
 });
 
 export const readProjects = createAsyncThunk('todoist/readProjects', async (_, thunk) => {

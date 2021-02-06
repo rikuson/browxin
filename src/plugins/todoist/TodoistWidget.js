@@ -14,11 +14,14 @@ import {
 class TodoistWidget extends Component {
   componentDidMount() {
     const query = getQuery();
-    if ('state' in query && aes.decrypt(decodeURIComponent(query.state), this.props.iv).toString(enc) === 'todoist') {
-      this.props.authorize(query.code).then(() => window.location.href = '/');
+    if ('state' in query && this.decryptAuthState(query) === 'todoist') {
+      this.props.authorize(query).then(() => window.location.search = '');
     } else if (this.props.token) {
       this.props.readTasks();
     }
+  }
+  decryptAuthState(query) {
+    return aes.decrypt(decodeURIComponent(query.state), this.props.iv).toString(enc);
   }
   authorize() {
     const iv = nanoid();
@@ -68,6 +71,6 @@ export default TodoistWidget = connect(
     setIV: iv => dispatch(setIV(iv)),
     completeTask: taskId => dispatch(completeTask(taskId)),
     readTasks: () => dispatch(readTasks()),
-    authorize: code => dispatch(authorize(code)),
+    authorize: query => dispatch(authorize(query)),
   })
 )(TodoistWidget);
