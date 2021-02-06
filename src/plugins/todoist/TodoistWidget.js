@@ -13,7 +13,7 @@ class TodoistWidget extends Component {
   componentDidMount() {
     const query = getQuery();
     if ('state' in query && decryptAuthState(query.state, this.props.iv) === 'todoist') {
-      this.props.authorize(query).then(() => window.location.search = '');
+      this.props.authorize(query).then(() => window.location.href = '/');
     } else if (this.props.token) {
       this.props.readTasks();
     }
